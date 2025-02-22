@@ -1,0 +1,197 @@
+# HTML code:
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="section">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required><br>
+                <input type="password" id="password" placeholder="Password" required><br>
+                <button type="button" onclick="login()">Login</button>
+            </form>
+        </div>
+
+        <!-- Proceed Section (After Login) -->
+        <div id="proceedSection" class="section" style="display:none;">
+            <h2>Proceed</h2>
+            <input type="file" id="fileUpload" accept="application/pdf"><br>
+            <button onclick="proceed()">Proceed</button>
+        </div>
+
+        <!-- Interactive Content Section (Flashcards, Quiz, Study Plan) -->
+        <div id="interactiveSection" class="section" style="display:none;">
+            <h2>Interactive Content</h2>
+            <div class="button-container">
+                <button onclick="showFlashcards()">Flashcards</button>
+                <button onclick="showQuiz()">Quiz</button>
+                <button onclick="showStudyPlan()">Study Plan</button>
+            </div>
+
+            <div class="content-container">
+                <div id="flashcardsContent" class="content-section" style="display:none;">
+                    <h3>Flashcards</h3>
+                    <p>Flashcards will be generated here.</p>
+                </div>
+
+                <div id="quizContent" class="content-section" style="display:none;">
+                    <h3>Quiz</h3>
+                    <p>The quiz will be generated here.</p>
+                </div>
+
+                <div id="studyPlanContent" class="content-section" style="display:none;">
+                    <h3>Study Plan</h3>
+                    <p>Your saved study plan will appear here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle the login process
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('proceedSection').style.display = 'block';
+            } else {
+                alert('Please enter a valid username and password.');
+            }
+        }
+
+        // Proceed after file upload
+        function proceed() {
+            const file = document.getElementById('fileUpload').files[0];
+
+            if (file) {
+                document.getElementById('proceedSection').style.display = 'none';
+                document.getElementById('interactiveSection').style.display = 'block';
+            } else {
+                alert('Please upload a file.');
+              
+            }
+            
+        }
+
+
+        // Show Flashcards content
+        function showFlashcards() {
+            hideAllContent();
+            document.getElementById('flashcardsContent').style.display = 'block';
+        }
+
+        // Show Quiz content
+        function showQuiz() {
+            hideAllContent();
+            document.getElementById('quizContent').style.display = 'block';
+        }
+
+        // Show Study Plan content
+        function showStudyPlan() {
+            hideAllContent();
+            document.getElementById('studyPlanContent').style.display = 'block';
+        }
+
+        // Hide all content sections
+        function hideAllContent() {
+            document.getElementById('flashcardsContent').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('studyPlanContent').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+# This is CSS code:
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, #ff9966, #ff5e62);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+input[type="text"], input[type="password"], input[type="file"] {
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #ff5e62;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ff9966;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.content-container {
+    margin-top: 20px;
+}
+
+.content-section {
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+h3 {
+    color: #444;
+}
+
