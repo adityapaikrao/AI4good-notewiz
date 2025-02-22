@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteWiz - Study Plan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .hidden { display: none; }
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div id="loginPage" class="container">
+        <h2>Login to NoteWiz</h2>
+        <input type="text" id="username" placeholder="Enter Username"><br><br>
+        <button class="button" onclick="login()">Login</button>
+    </div>
+
+    <div id="homePage" class="container hidden">
+        <h2>Welcome to NoteWiz</h2>
+        <input type="file" id="fileInput"><br><br>
+        <button class="button" onclick="proceedToStudyPlan()">Proceed</button>
+    </div>
+
+    <div id="studyPlanPage" class="container hidden">
+        <h2>Study Plan</h2>
+        <button class="button" onclick="fetchSummary()">Summary</button>
+        <button class="button" onclick="fetchFlashcards()">Flashcards</button>
+        <button class="button" onclick="fetchQuizzes()">Quizzes</button>
+        <textarea id="outputBox" rows="10" cols="50" readonly></textarea>
+    </div>
+
+    <script>
+        function login() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('homePage').classList.remove('hidden');
+        }
+        
+        function proceedToStudyPlan() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('studyPlanPage').classList.remove('hidden');
+        }
+
+        async function fetchGPTResponse(prompt) {
+            const apiKey = 'YOUR_OPENAI_API_KEY';
+            const response = await fetch("https://api.openai.com/v1/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4",
+                    prompt: prompt,
+                    max_tokens: 200
+                })
+            });
+            const data = await response.json();
+            return data.choices[0].text;
+        }
+
+        async function fetchSummary() {
+            const prompt = "Summarize the following study material: \n" + document.getElementById('fileInput').value;
+            document.getElementById('outputBox').value = await fetchGPTResponse(prompt);
+        }
+
+        async function fetchFlashcards() {
+            const prompt = "Generate flashcards for the following study material: \n" + document.getElementById('fileInput').value;
+            document.getElementById('outputBox').value = await fetchGPTResponse(prompt);
+        }
+
+        async function fetchQuizzes() {
+            const prompt = "Generate quiz questions for the following study material: \n" + document.getElementById('fileInput').value;
+            document.getElementById('outputBox').value = await fetchGPTResponse(prompt);
+        }
+    </script>
+</body>
+</html>
