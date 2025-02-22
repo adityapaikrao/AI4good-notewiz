@@ -1,0 +1,202 @@
+# This is Updated HTML code:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="section">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required><br>
+                <input type="password" id="password" placeholder="Password" required><br>
+                <button type="button" onclick="login()">Login</button>
+            </form>
+        </div>
+
+        <!-- Proceed Section (After Login) -->
+        <div id="proceedSection" class="section" style="display:none;">
+            <h2>Proceed</h2>
+            <input type="file" id="fileUpload" accept=".pdf,.txt,.docx"><br>
+            <button onclick="proceed()">Proceed</button>
+        </div>
+
+        <!-- Interactive Content Section (Flashcards, Quiz, Study Plan) -->
+        <div id="interactiveSection" class="section" style="display:none;">
+            <h2>Interactive Content</h2>
+            <div class="button-container">
+                <button onclick="showFlashcards()">Flashcards</button>
+                <button onclick="showQuiz()">Quiz</button>
+                <button onclick="showStudyPlan()">Study Plan</button>
+            </div>
+
+            <div class="content-container">
+                <div id="flashcardsContent" class="content-section" style="display:none;">
+                    <h3>Flashcards</h3>
+                    <div id="flashcardsContentResult"></div>
+                </div>
+
+                <div id="quizContent" class="content-section" style="display:none;">
+                    <h3>Quiz</h3>
+                    <div id="quizContentResult"></div>
+                </div>
+
+                <div id="studyPlanContent" class="content-section" style="display:none;">
+                    <h3>Study Plan</h3>
+                    <div id="studyPlanContentResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle the login process
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('proceedSection').style.display = 'block';
+            } else {
+                alert('Please enter a valid username and password.');
+            }
+        }
+
+        // Proceed after file upload
+        function proceed() {
+            const file = document.getElementById('fileUpload').files[0];
+
+            if (file) {
+                // Show interactive section after file upload
+                document.getElementById('proceedSection').style.display = 'none';
+                document.getElementById('interactiveSection').style.display = 'block';
+                
+                // Create FormData to send the file
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // Send the file to the server (API call to backend)
+                fetch('/process-file', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Assuming the server responds with the content for flashcards, quiz, and study plan
+                    document.getElementById('flashcardsContentResult').innerHTML = data.flashcards;
+                    document.getElementById('quizContentResult').innerHTML = data.quiz;
+                    document.getElementById('studyPlanContentResult').innerHTML = data.studyPlan;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error processing the file. Please try again.');
+                });
+            } else {
+                alert('Please upload a file.');
+            }
+        }
+
+        // Show Flashcards content
+        function showFlashcards() {
+            hideAllContent();
+            document.getElementById('flashcardsContent').style.display = 'block';
+        }
+
+        // Show Quiz content
+        function showQuiz() {
+            hideAllContent();
+            document.getElementById('quizContent').style.display = 'block';
+        }
+
+        // Show Study Plan content
+        function showStudyPlan() {
+            hideAllContent();
+            document.getElementById('studyPlanContent').style.display = 'block';
+        }
+
+        // Hide all content sections
+        function hideAllContent() {
+            document.getElementById('flashcardsContent').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('studyPlanContent').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+# Here is Back_End Code for JavaScipt
+
+npm install express multer axios
+
+const express = require('express');
+const multer = require('multer');
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+// Initialize express app
+const app = express();
+const port = 3000;
+
+// Set up multer for file uploads
+const upload = multer({ dest: 'uploads/' });
+
+// OpenAI API Key (replace with your actual API key)
+const openAIKey = 'YOUR_OPENAI_API_KEY';
+
+// API endpoint to handle file upload and OpenAI processing
+app.post('/process-file', upload.single('file'), async (req, res) => {
+    const filePath = req.file.path;
+    const fileContent = fs.readFileSync(filePath, 'utf8'); // Read file content
+
+    try {
+        // Call OpenAI API to generate Flashcards, Quiz, and Study Plan
+        const response = await axios.post('https://api.openai.com/v1/completions', {
+            model: 'gpt-4',
+            prompt: `Generate flashcards, a quiz, and a study plan based on the following content:\n\n${fileContent}`,
+            max_tokens: 500,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${openAIKey}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const gptResponse = response.data.choices[0].text;
+        
+        // Example of splitting GPT response into different parts
+        const flashcards = gptResponse.split('Flashcards:')[1]?.split('Quiz:')[0].trim();
+        const quiz = gptResponse.split('Quiz:')[1]?.split('Study Plan:')[0].trim();
+        const studyPlan = gptResponse.split('Study Plan:')[1]?.trim();
+
+        // Send back the content to the front end
+        res.json({
+            flashcards: flashcards,
+            quiz: quiz,
+            studyPlan: studyPlan,
+        });
+
+        // Clean up the uploaded file after processing
+        fs.unlinkSync(filePath);
+
+    } catch (error) {
+        console.error('Error during API call:', error);
+        res.status(500).send('Error processing the file');
+    }
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
