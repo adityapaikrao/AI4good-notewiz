@@ -1,10 +1,4 @@
-Sure! Here's a well-structured README file based on your provided content:  
-
----
-
-# AI4Good-NoteWiz  
-
-AI4Good-NoteWiz is a Streamlit-based application designed for efficient note processing. It leverages PDF extraction and AI capabilities to enhance your workflow.  
+NoteWiz is an application designed for efficient note processing. It leverages PDF extraction and AI capabilities to enhance your workflow.  
 
 ## Installation Guide  
 
