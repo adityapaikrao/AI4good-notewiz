@@ -1,4 +1,4 @@
-**NoteWiz** is an intelligent learning assistant designed to help students, educators, and lifelong learners optimize their study process. Integrating user-provided notes and materials, the app generates personalized, research-backed study plans using proven learning techniques such as retrieval practice (quizzes & flashcards), spaced practice, interleaving, and elaborative interrogation. The AI adapts study sessions based on progress, ensuring effective retention and comprehension. With features like automated note organization and adaptive learning, this app transforms studying into a structured and efficient experience.
+AI4Good-NoteWiz is a Streamlit-based application designed for efficient note processing. It leverages PDF extraction and AI capabilities to enhance your workflow.
 
 ## Installation Guide  
 
