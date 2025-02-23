@@ -91,8 +91,4 @@ streamlit run note1.py
 - Ollama installed  
 
 ## License  
-This project is licensed under an open-source or proprietary license (add details if applicable).  
-
----
-
-Now it **explicitly** includes activating the virtual environment in the new terminal before pulling the model. Let me know if you need any more refinements! 🚀
+This project is licensed under an open-source or proprietary license.  
