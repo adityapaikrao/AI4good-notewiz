@@ -1,12 +1,10 @@
 import streamlit as st
 import pdfplumber
-import subprocess
-import random
 from prompts import *
+from pages import custom_sidebar, user_dashboard, user_profile
 from mistralai import Mistral
 from dotenv import load_dotenv
 import os
-import ast
 import json
 load_dotenv()
 
@@ -50,28 +48,15 @@ def extract_text_from_pdf(uploaded_file):
 
 
 def main_app():
-    # Initialize session state
-    if "summary" not in st.session_state:
-        st.session_state["summary"] = None
-    if "quiz" not in st.session_state:
-        st.session_state["quiz"] = []
-    if "flashcards" not in st.session_state:
-        st.session_state["flashcards"] = []
-    if "selected_section" not in st.session_state:
-        st.session_state["selected_section"] = None
-    if "current_flashcard_index" not in st.session_state:
-        st.session_state["current_flashcard_index"] = 0
-    if "show_answer" not in st.session_state:
-        st.session_state["show_answer"] = False
-    if "current_quiz_index" not in st.session_state:
-        st.session_state["current_quiz_index"] = 0
-    if "user_quiz_input" not in st.session_state:
-        st.session_state["user_quiz_input"] = ""
-    if "quiz_feedback" not in st.session_state:
-        st.session_state["quiz_feedback"] = ""
+
+    if st.session_state["dark_mode"]:
+        st.markdown("<style>body { background-color: black; color: white; }</style>", unsafe_allow_html=True)
+    else:
+        st.markdown("<style>body { background-color: white; color: black; }</style>", unsafe_allow_html=True)
+    
     # Streamlit UI
     # st.set_page_config(page_title="AI Study Helper", layout="centered")
-    st.title("📚 AI Study Helper (Mistral)")
+    st.title("📚 NoteWiz")
     st.write("Upload a PDF to generate **Summaries, Quiz Questions, and Flashcards!**")
 
     # Upload PDF
@@ -111,7 +96,7 @@ def main_app():
                 resp = get_model_response(prompt)
                 st.session_state["quiz"] = []
                 for question_dict in resp['questions']:
-                    print(question_dict)
+                    # print(question_dict)
                     question = question_dict['question']
                     options = {
                             "A": question_dict['A'],
@@ -140,7 +125,9 @@ def main_app():
 
             if st.session_state["selected_section"] == "Flashcards" and not st.session_state["flashcards"]:
                 prompt = FLASHCARD + f"""{pdf_text} Output:"""
+                # print(prompt) 
                 flashcard_dict = get_model_response(prompt)
+                # print(flashcard_dict)
                 flashcards_list = [{'question':key, 'answer':value} for key,value in flashcard_dict.items()]
                 if len(flashcards_list) % 2 != 0:
                     flashcards_list.append("No answer provided")
@@ -178,6 +165,7 @@ def main_app():
                             st.session_state["current_quiz_index"] += 1
                             st.session_state["quiz_feedback"] = ""
                             st.session_state["user_quiz_input"] = ""
+                            st.session_state["quiz_progress"] = ((st.session_state["current_quiz_index"] + 1) / len(st.session_state["quiz"])) * 100
                             st.rerun()
                         else:
                             st.success("🎉 You've completed all questions!")
@@ -208,7 +196,17 @@ def main_app():
                         if st.button("➡️ Next", disabled=index == len(st.session_state["flashcards"]) - 1):
                             st.session_state["current_flashcard_index"] += 1
                             st.session_state["show_answer"] = False  
+                            st.session_state["flashcard_progress"] = ((st.session_state["current_flashcard_index"] + 1) / len(st.session_state["flashcards"])) * 100
                             st.rerun()
                 else:
                     st.warning("⚠️ No flashcards generated. Try uploading a different PDF.")
 
+
+def render_pages():
+
+    if st.session_state["page"] == "dashboard":
+        user_dashboard()
+    elif st.session_state["page"] == "profile":
+        user_profile()
+    else:
+        main_app()

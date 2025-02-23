@@ -28,15 +28,19 @@ Machine learning continues to advance rapidly, impacting diverse fields. Underst
 
 """
 
-FLASHCARD = CONTENT + """
-Output:
+FLASHCARD = """
+Output: The value for each key should be short - one or a few word answer. The output should be related to the text in the CONTENT section.
+Ex: "Question":"This is a sample Answer"
 
-{
-  "What is the main difference between supervised and unsupervised learning?": "Supervised learning uses labeled data, while unsupervised learning finds patterns in unlabeled data.",
-  "Name two common evaluation metrics for classification models.": "Accuracy, Precision & Recall",
-  "What is overfitting, and how can it be mitigated?": "Overfitting occurs when a model learns noise rather than the true pattern. It can be mitigated using regularization, cross-validation, and pruning techniques.",
-  "Which machine learning algorithm is commonly used for regression tasks?": "Linear Regression",
-  "What does a confusion matrix represent?": "A confusion matrix summarizes classification performance by comparing predicted and actual labels."
+{ 
+    "What type of data does supervised learning use?": "Labeled", 
+    "Which learning type finds patterns in unlabeled data?": "Unsupervised",
+    "What metric measures the correctness of a classification model?": "Accuracy", 
+    "Which metric balances precision and recall?": "F1-score", 
+    "What issue arises when a model learns noise?": "Overfitting", 
+    "Which technique prevents overfitting?": "Regularization", 
+    "Which algorithm is common for regression?": "Linear", 
+    "What summarizes classification performance?": "ConfusionMatrix" 
 }
 """
 

@@ -1,9 +1,50 @@
 import streamlit as st
-from note1 import main_app
+from note1 import render_pages
+from pages import *
 
 # Initialize session state for login
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+
+# Initialize session state
+if "summary" not in st.session_state:
+    st.session_state["summary"] = None
+if "quiz" not in st.session_state:
+    st.session_state["quiz"] = []
+if "flashcards" not in st.session_state:
+    st.session_state["flashcards"] = []
+if "selected_section" not in st.session_state:
+    st.session_state["selected_section"] = None
+if "current_flashcard_index" not in st.session_state:
+    st.session_state["current_flashcard_index"] = 0
+if "show_answer" not in st.session_state:
+    st.session_state["show_answer"] = False
+if "current_quiz_index" not in st.session_state:
+    st.session_state["current_quiz_index"] = 0
+if "user_quiz_input" not in st.session_state:
+    st.session_state["user_quiz_input"] = ""
+if "quiz_feedback" not in st.session_state:
+    st.session_state["quiz_feedback"] = ""
+if "page" not in st.session_state:
+    st.session_state['page'] = "main"
+# Initialize session state
+if "page" not in st.session_state:
+    st.session_state["page"] = "main"
+if "summary" not in st.session_state:
+    st.session_state["summary"] = None
+if "quiz" not in st.session_state:
+    st.session_state["quiz"] = []
+if "flashcards" not in st.session_state:
+    st.session_state["flashcards"] = []
+if "progress" not in st.session_state:
+    st.session_state["progress"] = 0  # Overall Progress tracker (0 to 100)
+if "flashcard_progress" not in st.session_state:
+    st.session_state["flashcard_progress"] = 0
+if "quiz_progress" not in st.session_state:
+    st.session_state["quiz_progress"] = 0
+if "dark_mode" not in st.session_state:
+    st.session_state["dark_mode"] = False
+
 
 # Function to display the login form
 def login_form():
@@ -37,7 +78,8 @@ def main():
 
     # If logged in, show main app
     if st.session_state.logged_in:
-        main_app()
+        custom_sidebar()
+        render_pages()
         return  # Prevent further execution of login/register UI
 
     # Otherwise, show login/register UI
